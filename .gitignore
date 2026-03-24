@@ -1,0 +1,22 @@
+# Visual Studio / VS
+.vs/
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build outputs
+[Bb]in/
+[Oo]bj/
+dist/
+
+# Local Dalamud / .NET tooling caches (do not commit)
+.dotnet/
+.dotnet-home/
+
+# NuGet
+*.nupkg
+**/packages/
+
+# OS
+Thumbs.db
+Desktop.ini

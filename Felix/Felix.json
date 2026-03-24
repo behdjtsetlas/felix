@@ -1,0 +1,14 @@
+{
+  "Author": "Felixthebot",
+  "Name": "Felix",
+  "InternalName": "Felix",
+  "Description": "Sync live FFXIV character snapshots from Dalamud to the Felix dashboard and prepare future combat uploads.",
+  "RepoUrl": "https://felixthebot.com",
+  "Punchline": "Pair your character with Felix Command Center.",
+  "Tags": [
+    "felix",
+    "dashboard",
+    "sync",
+    "ffxiv"
+  ]
+}

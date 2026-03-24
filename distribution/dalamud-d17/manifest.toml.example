@@ -1,0 +1,11 @@
+# Copy this folder into goatcorp/DalamudPluginsD17 under testing/live/Felix (new plugins start in testing).
+# Rename to manifest.toml, replace placeholders, add images/icon.png (64x64–512x512, square), then open a PR.
+# Docs: https://dalamud.dev/plugin-publishing/submission
+# D17 repo: https://github.com/goatcorp/DalamudPluginsD17
+
+[plugin]
+repository = "https://github.com/YOUR_GITHUB_ORG/YOUR_REPO.git"
+commit = "FULL_40_CHAR_GIT_COMMIT_SHA"
+owners = [ "your_github_username" ]
+project_path = "felix-plugin/Felix"
+changelog = "Initial release on mainline testing track."
