@@ -7,7 +7,6 @@ Felix is a custom Dalamud plugin that pairs a local FFXIV client with the Felix 
 - pairs a local plugin install to the Felix dashboard with a one-time token
 - stores a long-lived device token after pairing
 - uploads periodic character snapshots to the dashboard
-- prepares the server-side route structure for future live combat uploads
 
 ## Project layout
 
@@ -30,7 +29,6 @@ Use that folder as your dev plugin location in XIVLauncher.
 
 - the snapshot builder currently syncs live player identity and territory basics first
 - currencies, collections, and combat parsing are scaffolded in the payload model and dashboard, but the local providers still need to be expanded
-- combat uploader routes exist on the dashboard, but the local parser/uploader is not wired yet
 
 ## Publishing (Dalamud mainline + dashboard)
 
