@@ -1,14 +1,28 @@
-{
-  "Author": "Felixthebot",
-  "Name": "Felix",
-  "InternalName": "Felix",
-  "Description": "Sync live FFXIV character snapshots from Dalamud to the Felix dashboard and prepare future combat uploads.",
-  "RepoUrl": "https://felixthebot.com",
-  "Punchline": "Pair your character with Felix Command Center.",
-  "Tags": [
-    "felix",
-    "dashboard",
-    "sync",
-    "ffxiv"
-  ]
-}
+  {
+    "Author": "Felixthebot",
+    "Name": "Felix",
+    "InternalName": "Felix",
+    "AssemblyVersion": "0.1.0",
+    "TestingAssemblyVersion": "0.1.0",
+    "Description": "Sync live FFXIV character snapshots from Dalamud to the Felix dashboard and track your progression. Also includes friends and focus target minimap along with roleplay scene productions that sync to Felix dashbaord.",
+    "Punchline": "Pair your character with Felix Command Center for tracking progression and for roleplay with map addons.",
+    "RepoUrl": "https://felixthebot.com",
+    "ApplicableVersion": "any",
+    "DalamudApiLevel": 14,
+    "IsHide": "False",
+    "IsTestingExclusive": "False",
+    "DownloadLinkInstall": "https://felixthebot.com/downloads/dalamud/Felix/latest.zip",
+    "DownloadLinkUpdate": "https://felixthebot.com/downloads/dalamud/Felix/latest.zip",
+    "DownloadCount": 0,
+    "LastUpdated": "2026-03-18T00:00:00Z",
+    "Tags": [
+      "felix",
+      "dashboard",
+      "ffxiv",
+      "sync",
+      "character",
+      "roleplay",
+      "map addon",
+      "social"
+    ]
+  }
