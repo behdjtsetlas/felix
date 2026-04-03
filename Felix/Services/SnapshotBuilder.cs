@@ -1130,9 +1130,9 @@ public sealed unsafe partial class SnapshotBuilder
         {
             detailParts.Add($"Book entries: {string.Join(", ", dutyPreview)}");
         }
-        else if ((state.DutyIds?.Count ?? 0) > 0)
+        else if (state.DutyIds is { Count: > 0 } dutyIdsTail)
         {
-            detailParts.Add($"Book duties detected: {state.DutyIds.Count}");
+            detailParts.Add($"Book duties detected: {dutyIdsTail.Count}");
         }
 
         if (!state.HasJournal)

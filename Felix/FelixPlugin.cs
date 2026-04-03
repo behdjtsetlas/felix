@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Dalamud.Game.Addon.Lifecycle;
 using Dalamud.Game.Addon.Lifecycle.AddonArgTypes;
+using Dalamud.Game.NativeWrapper;
 using Dalamud.Game.ClientState.Party;
 using Dalamud.Game.ClientState.Objects.Enums;
 using Dalamud.Game.Command;
@@ -151,8 +152,6 @@ public sealed class FelixPlugin : IDalamudPlugin
     private PendingNativeSpeechBubbleResize? pendingNativeSpeechBubbleResize;
     private string lastNativeBubbleDiscoverySignature = string.Empty;
     private string lastMapFocusMarkerDiscoverySignature = string.Empty;
-    private ulong lastNativeFocusTargetObjectId;
-    private Vector3 lastNativeFocusTargetPosition;
     private DateTimeOffset lastNativeFocusTargetMarkerRefreshAt = DateTimeOffset.MinValue;
     private bool nativeFocusTargetMarkerInjected;
 
@@ -848,7 +847,7 @@ public sealed class FelixPlugin : IDalamudPlugin
     public async Task UploadQueuedLinesThenLeaveRpSceneAsync()
     {
         await this.UploadRpSceneLinesNowAsync().ConfigureAwait(false);
-        this.framework.RunOnTick(() => this.LeaveRpScene());
+        _ = this.framework.RunOnTick(() => this.LeaveRpScene());
     }
 
     private async Task ProcessMirrorRenderQueueAsync()
@@ -1448,7 +1447,7 @@ public sealed class FelixPlugin : IDalamudPlugin
                 {
                     var dropped = batch.Count;
                     this.rpSceneConsecutiveUploadFailures = 0;
-                    this.framework.RunOnTick(() =>
+                    _ = this.framework.RunOnTick(() =>
                     {
                         this.LeaveRpScene(
                             "This RP scene ended or this device is no longer a member. "
@@ -1511,7 +1510,7 @@ public sealed class FelixPlugin : IDalamudPlugin
         }
 
         var tcs = new TaskCompletionSource<(string ContentId, string Name)?>(TaskCreationOptions.RunContinuationsAsynchronously);
-        this.framework.RunOnTick(() =>
+        _ = this.framework.RunOnTick(() =>
         {
             try
             {
@@ -1633,11 +1632,13 @@ public sealed class FelixPlugin : IDalamudPlugin
                 {
                     if (args is AddonSetupArgs setupArgs)
                     {
-                        this.LogFreeCompanyAtkValues(addonName, "Setup", setupArgs.AtkValueSpan);
+                        var fcVals = MaterializeAtkValues(setupArgs.AtkValueEnumerable);
+                        this.LogFreeCompanyAtkValues(addonName, "Setup", fcVals);
                     }
                     else if (args is AddonRefreshArgs refreshArgs)
                     {
-                        this.LogFreeCompanyAtkValues(addonName, "Refresh", refreshArgs.AtkValueSpan);
+                        var fcVals = MaterializeAtkValues(refreshArgs.AtkValueEnumerable);
+                        this.LogFreeCompanyAtkValues(addonName, "Refresh", fcVals);
                     }
                 }
                 catch (Exception ex)
@@ -1654,24 +1655,26 @@ public sealed class FelixPlugin : IDalamudPlugin
             {
                 if (args is AddonSetupArgs setupArgs)
                 {
-                    var captured = this.TryCaptureDailyAddonState(addonName, setupArgs.AtkValueSpan);
+                    var dailyVals = MaterializeAtkValues(setupArgs.AtkValueEnumerable);
+                    var captured = this.TryCaptureDailyAddonState(addonName, dailyVals);
                     if (this.configuration.DailyDiscoveryMode && (captured || isDailyAddon))
                     {
                         var entry = $"Addon {type}: {addonName}";
                         this.AppendDailyDiscovery(entry);
                         this.pluginLog.Information("Felix daily addon discovery: {Entry}", entry);
-                        this.LogDailyAtkValues(addonName, "Setup", setupArgs.AtkValueSpan);
+                        this.LogDailyAtkValues(addonName, "Setup", dailyVals);
                     }
                 }
                 else if (args is AddonRefreshArgs refreshArgs)
                 {
-                    var captured = this.TryCaptureDailyAddonState(addonName, refreshArgs.AtkValueSpan);
+                    var dailyVals = MaterializeAtkValues(refreshArgs.AtkValueEnumerable);
+                    var captured = this.TryCaptureDailyAddonState(addonName, dailyVals);
                     if (this.configuration.DailyDiscoveryMode && (captured || isDailyAddon))
                     {
                         var entry = $"Addon {type}: {addonName}";
                         this.AppendDailyDiscovery(entry);
                         this.pluginLog.Information("Felix daily addon discovery: {Entry}", entry);
-                        this.LogDailyAtkValues(addonName, "Refresh", refreshArgs.AtkValueSpan);
+                        this.LogDailyAtkValues(addonName, "Refresh", dailyVals);
                     }
                 }
             }
@@ -1688,24 +1691,26 @@ public sealed class FelixPlugin : IDalamudPlugin
             {
                 if (args is AddonSetupArgs setupArgs)
                 {
-                    this.TryCaptureWeeklyAddonState(addonName, args, setupArgs.AtkValueSpan);
+                    var weeklyVals = MaterializeAtkValues(setupArgs.AtkValueEnumerable);
+                    this.TryCaptureWeeklyAddonState(addonName, args, weeklyVals);
                     if (this.configuration.WeeklyDiscoveryMode)
                     {
                         var entry = $"Addon {type}: {addonName}";
                         this.AppendWeeklyDiscovery(entry);
                         this.pluginLog.Information("Felix weekly addon discovery: {Entry}", entry);
-                        this.LogWeeklyAtkValues(addonName, "Setup", setupArgs.AtkValueSpan);
+                        this.LogWeeklyAtkValues(addonName, "Setup", weeklyVals);
                     }
                 }
                 else if (args is AddonRefreshArgs refreshArgs)
                 {
-                    this.TryCaptureWeeklyAddonState(addonName, args, refreshArgs.AtkValueSpan);
+                    var weeklyVals = MaterializeAtkValues(refreshArgs.AtkValueEnumerable);
+                    this.TryCaptureWeeklyAddonState(addonName, args, weeklyVals);
                     if (this.configuration.WeeklyDiscoveryMode)
                     {
                         var entry = $"Addon {type}: {addonName}";
                         this.AppendWeeklyDiscovery(entry);
                         this.pluginLog.Information("Felix weekly addon discovery: {Entry}", entry);
-                        this.LogWeeklyAtkValues(addonName, "Refresh", refreshArgs.AtkValueSpan);
+                        this.LogWeeklyAtkValues(addonName, "Refresh", weeklyVals);
                     }
                 }
             }
@@ -2041,8 +2046,6 @@ public sealed class FelixPlugin : IDalamudPlugin
         }
 
         this.nativeFocusTargetMarkerInjected = false;
-        this.lastNativeFocusTargetObjectId = 0;
-        this.lastNativeFocusTargetPosition = default;
         this.lastNativeFocusTargetMarkerRefreshAt = DateTimeOffset.MinValue;
     }
 
@@ -2925,6 +2928,23 @@ public sealed class FelixPlugin : IDalamudPlugin
             || lowered.Contains("provision")
             || lowered.Contains("grandcompany")
             || lowered.Contains("gc");
+    }
+
+    private static unsafe AtkValue[] MaterializeAtkValues(IEnumerable<AtkValuePtr> source)
+    {
+        var list = new List<AtkValue>(72);
+        foreach (var ptr in source)
+        {
+            if (ptr.IsNull)
+            {
+                list.Add(default);
+                continue;
+            }
+
+            list.Add(*(AtkValue*)ptr.Address);
+        }
+
+        return list.ToArray();
     }
 
     private void LogFreeCompanyAtkValues(string addonName, string phase, ReadOnlySpan<AtkValue> values)

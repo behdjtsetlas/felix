@@ -43,6 +43,7 @@ Optional: copy straight into the dashboard static tree:
 ### Host files on the dashboard
 
 - **Zip:** `public/downloads/dalamud/Felix/latest.zip` (same layout as the script: `Felix.dll` + `Felix.json` at archive root).
+- **Icon (installer art for custom repo):** `public/downloads/dalamud/Felix/icon.png` — square PNG (e.g. 128×128 or 256×256). The generated `repo.json` includes **`IconUrl`** pointing at `/downloads/dalamud/Felix/icon.png` ([Dalamud custom repo fields](https://dalamud.dev/plugin-publishing/custom-repositories/)). Optional override: env **`FELIX_PLUGIN_ICON_URL`** (full `https://...` URL).
 - **Repo JSON:** served dynamically at `/downloads/dalamud/repo.json` (see dashboard `server.js`). Dalamud loads this URL when users add your **custom repo**.
 
 ### Environment variables (dashboard)

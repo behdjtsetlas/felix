@@ -12,6 +12,7 @@
     "DalamudApiLevel": 14,
     "IsHide": "False",
     "IsTestingExclusive": "False",
+    "IconUrl": "https://felixthebot.com/downloads/dalamud/Felix/icon.png",
     "DownloadLinkInstall": "https://felixthebot.com/downloads/dalamud/Felix/latest.zip",
     "DownloadLinkUpdate": "https://felixthebot.com/downloads/dalamud/Felix/latest.zip",
     "DownloadCount": 0,
